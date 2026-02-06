@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Amorcito, tengo una pregunta...</title>
+
+  <style>
+    :root{
+      --bg1:#fdecef;
+      --bg2:#f7c7d3;
+      --card:#ffffffde;
+      --text:#111827;
+      --muted:#6b7280;
+      --yes:#16a34a;
+      --no:#ef4444;
+      --shadow: 0 14px 35px rgba(0,0,0,.12);
+      --stroke: rgba(0,0,0,.06);
+    }
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background: radial-gradient(circle at top, var(--bg1), var(--bg2));
+      overflow:hidden;
+      padding:18px;
+      position:relative;
+    }
+
+    /* ===== Corazones cayendo (suave) ===== */
+    .heart-rain{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:0;
+      overflow:hidden;
+    }
+    .h{
+      position:absolute;
+      top:-12vh;
+      opacity:.18;
+      animation: fall linear infinite;
+      will-change: transform;
+      filter: blur(.2px);
+    }
+    @keyframes fall{
+      from{ transform: translate3d(0,-15vh,0) rotate(0deg); }
+      to  { transform: translate3d(0,120vh,0) rotate(360deg); }
+    }
+
+    /* ===== Collage de fotos por toda la pantalla ===== */
+    .collage{
+      position:fixed; inset:0;
+      pointer-events:none;
+      z-index:1;
+    }
+    .photo{
+      position:absolute;
+      width: 190px;
+      height: 250px;
+      border-radius: 18px;
+      padding: 10px;
+      background: rgba(255,255,255,.75);
+      border: 1px solid var(--stroke);
+      box-shadow: 0 14px 26px rgba(0,0,0,.12);
+      transform: rotate(var(--rot));
+      overflow:hidden;
+    }
+    .photo::before{
+      content:"";
+      position:absolute;
+      inset:6px;
+      border-radius:14px;
+      pointer-events:none;
+      border: 10px solid transparent;
+      border-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='36' height='36' viewBox='0 0 36 36'%3E%3Cpath d='M18 30s-10-6.3-12.9-12.1C3.1 13.6 5.8 9 10.6 9c2.5 0 4.3 1.4 5.4 3 1.1-1.6 2.9-3 5.4-3 4.8 0 7.5 4.6 5.5 8.9C28 23.7 18 30 18 30z' fill='%23ff5a7a' fill-opacity='0.55'/%3E%3C/svg%3E") 12 round;
+      opacity:.95;
+    }
+    .photo img{
+      width:100%; height:100%;
+      object-fit: cover;
+      border-radius:14px;
+      display:block;
+      background:#f3f4f6;
+    }
+
+    /* ===== Tarjeta principal ===== */
+    .card{
+      position:relative;
+      z-index:2;
+      width:min(560px, 96vw);
+      background:var(--card);
+      backdrop-filter: blur(10px);
+      border-radius:22px;
+      padding:26px 22px 18px;
+      box-shadow: var(--shadow);
+      text-align:center;
+      border: 1px solid var(--stroke);
+    }
+    .tag{
+      display:inline-block;
+      padding:6px 10px;
+      border-radius:999px;
+      background:#fff;
+      color:var(--muted);
+      font-size:12px;
+      border:1px solid var(--stroke);
+      margin-bottom:10px;
+    }
+    h1{
+      margin: 10px 0 8px;
+      font-size: clamp(26px, 5vw, 40px);
+      letter-spacing: -.02em;
+    }
+    p{
+      margin:0 auto 16px;
+      max-width: 52ch;
+      font-size: clamp(16px, 2.6vw, 18px);
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .btnArea{
+      margin-top: 10px;
+      position: relative;
+      height: 92px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap: 10px;
+    }
+    button{
+      border:0;
+      padding:14px 18px;
+      border-radius:14px;
+      font-size:18px;
+      font-weight:700;
+      cursor:pointer;
+      box-shadow: 0 10px 18px rgba(0,0,0,.12);
+      transition: transform .08s ease, filter .2s ease;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+      min-width: 150px;
+    }
+    button:active{ transform: scale(.98); }
+    #yesBtn{ background: var(--yes); color:#fff; }
+    #noBtn{
+      background: var(--no); color:#fff;
+      position:absolute;
+      left: 56%;
+      top: 14px;
+    }
+
+    .secret-btn{
+      margin-top: 10px;
+      min-width: 0;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: .02em;
+      background: rgba(17,24,39,.06);
+      border: 1px solid rgba(0,0,0,.08);
+      color: rgba(17,24,39,.75);
+      box-shadow: none;
+    }
+
+    .msg{
+      margin-top: 12px;
+      font-weight: 600;
+      font-size: 16px;
+      color: #374151;
+      min-height: 26px;
+    }
+
+    .done{
+      display:none;
+      margin-top: 10px;
+      padding: 16px 14px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid var(--stroke);
+      color:#111827;
+      text-align:left;
+      max-width: 60ch;
+      margin-left:auto;
+      margin-right:auto;
+    }
+    .done h2{ margin:0 0 6px; font-size: 20px; }
+    .done p{ margin:0; color:#374151; font-size: 15px; }
+
+    /* ===== Responsive para fotos alrededor ===== */
+    @media (max-width: 520px){
+      .photo{ width: 140px; height: 190px; }
+      .p1{ left:-22px; top: 24px; }
+      .p2{ right:-26px; top: 70px; }
+      .p3{ left:-20px; bottom: 40px; }
+      .p4{ right:-18px; bottom: 90px; }
+      .p5{ left: 52%; top: -14px; transform: translateX(-50%) rotate(var(--rot)); }
+    }
+
+    /* ====== MODAL SECRETO (modo oscuro) ====== */
+    .secret-overlay{
+      position:fixed;
+      inset:0;
+      z-index:999;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      background: rgba(0,0,0,.82);
+      backdrop-filter: blur(8px);
+    }
+
+    .secret-panel{
+      width:min(860px, 96vw);
+      max-height: min(86vh, 760px);
+      border-radius: 22px;
+      border: 1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(180,120,255,.18), transparent 55%),
+        radial-gradient(900px 500px at 90% 20%, rgba(255,140,0,.18), transparent 55%),
+        rgba(8,8,12,.93);
+      box-shadow: 0 30px 90px rgba(0,0,0,.6);
+      padding: 14px;
+      color: rgba(255,255,255,.92);
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      flex-direction: column;
+    }
+
+    /* Lluvia de fuego dentro del modal */
+    .fire-rain{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+      z-index:0;
+      opacity:.22;
+      overflow:hidden;
+    }
+    .f{
+      position:absolute;
+      top:-12vh;
+      animation: fireFall linear infinite;
+      will-change: transform;
+      filter: blur(.2px);
+      font-size: 18px;
+    }
+    @keyframes fireFall{
+      from{ transform: translate3d(0,-15vh,0) rotate(0deg); opacity:0; }
+      10%{ opacity:1; }
+      to  { transform: translate3d(0,120vh,0) rotate(360deg); opacity:0; }
+    }
+
+    .secret-content{
+      position:relative;
+      z-index:1;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 0;
+    }
+
+    .secret-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      padding: 6px 6px 2px;
+    }
+    .secret-title{
+      text-align:left;
+      max-width: 62ch;
+    }
+    .secret-title h3{
+      margin:0 0 4px;
+      font-size: 18px;
+      letter-spacing: -.01em;
+    }
+    .secret-title p{
+      margin:0;
+      color: rgba(255,255,255,.70);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .close-btn{
+      min-width: 0;
+      padding: 10px 12px;
+      border-radius: 12px;
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.14);
+      color: rgba(255,255,255,.92);
+      box-shadow:none;
+      font-size: 14px;
+    }
+
+    /* ===== Collage real (memes) ===== */
+    .meme-scroll{
+      min-height: 0;
+      overflow:auto;
+      padding: 10px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.04);
+    }
+
+    .meme-collage{
+      position: relative;
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-auto-rows: 120px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(0,0,0,.22);
+      border: 1px solid rgba(255,255,255,.08);
+      overflow:hidden;
+    }
+
+    @media (min-width: 820px){
+      .meme-collage{
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-auto-rows: 130px;
+      }
+    }
+
+    /* stickers fijos (esquinas) */
+    .sticker{
+      position:absolute;
+      z-index:2;
+      pointer-events:none;
+      filter: drop-shadow(0 18px 22px rgba(0,0,0,.55));
+      opacity: .95;
+      transform: rotate(var(--srot));
+      font-size: 26px;
+    }
+    .s1{ left: 10px; top: 10px; --srot:-12deg; }
+    .s2{ right: 10px; top: 10px; --srot:10deg; }
+    .s3{ left: 12px; bottom: 12px; --srot:8deg; }
+    .s4{ right: 12px; bottom: 12px; --srot:-10deg; }
+
+    /* diablito al centro */
+    .devil{
+      position: absolute;
+      left: 50%;
+      top: 52%;
+      transform: translate(-50%, -50%) rotate(-6deg);
+      font-size: 56px;
+      filter: drop-shadow(0 18px 22px rgba(0,0,0,.55));
+      opacity: .96;
+      z-index: 3;
+      pointer-events:none;
+      animation: pulseDevil 1.6s ease-in-out infinite;
+    }
+    @keyframes pulseDevil{
+      0%,100%{ transform: translate(-50%, -50%) rotate(-6deg) scale(1); }
+      50%{ transform: translate(-50%, -50%) rotate(-6deg) scale(1.08); }
+    }
+
+    .meme{
+      position: relative;
+      border-radius: 20px;
+      padding: 10px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 0 18px 40px rgba(0,0,0,.45);
+      overflow: hidden;
+      transform: rotate(var(--rot));
+      z-index:1;
+    }
+
+    /* cinta arriba */
+    .meme::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top: 8px;
+      width: 62%;
+      height: 16px;
+      transform: translateX(-50%) rotate(-2deg);
+      background: rgba(180, 120, 255, .35);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 6px;
+      box-shadow: 0 10px 18px rgba(0,0,0,.35);
+      opacity: .9;
+    }
+
+    /* brillo */
+    .meme::before{
+      content:"";
+      position:absolute;
+      inset:-80px;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(180,120,255,.22), transparent 55%),
+        radial-gradient(circle at 80% 30%, rgba(255,140,0,.18), transparent 60%);
+      filter: blur(16px);
+      opacity:.55;
+      pointer-events:none;
+    }
+
+    /* imagen completa sin recortar */
+    .meme img{
+      width:100%;
+      height:100%;
+      object-fit: contain;
+      display:block;
+      border-radius: 14px;
+      background: rgba(255,255,255,.05);
+      position: relative;
+    }
+
+    /* Distribución collage (tamaños distintos) */
+    .m1{ grid-column: 1 / 2; grid-row: 1 / span 2; --rot: -2.2deg; }
+    .m2{ grid-column: 2 / 3; grid-row: 1 / span 1; --rot:  1.6deg; }
+    .m3{ grid-column: 2 / 3; grid-row: 2 / span 2; --rot: -1.2deg; }
+    .m4{ grid-column: 1 / 2; grid-row: 3 / span 1; --rot:  2.4deg; }
+
+    @media (min-width: 820px){
+      .m1{ grid-column: 1 / 2; grid-row: 1 / span 2; }
+      .m2{ grid-column: 2 / 4; grid-row: 1 / span 1; }
+      .m3{ grid-column: 2 / 3; grid-row: 2 / span 2; }
+      .m4{ grid-column: 3 / 4; grid-row: 2 / span 1; }
+    }
+
+    .secret-actions{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      padding: 0 6px 6px;
+    }
+    .ok-btn{
+      background: rgba(255,140,0,.90);
+      color: #0b0b0e;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow:none;
+      font-size: 14px;
+      min-width: 0;
+      padding: 12px 14px;
+    }
+    .soft-btn{
+      background: rgba(255,255,255,.10);
+      color: rgba(255,255,255,.92);
+      border: 1px solid rgba(255,255,255,.14);
+      box-shadow:none;
+      font-size: 14px;
+      min-width: 0;
+      padding: 12px 14px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Fondo: lluvia de corazones -->
+  <div class="heart-rain" id="heartRain" aria-hidden="true"></div>
+
+  <!-- Collage de fotos por toda la pantalla -->
+  <div class="collage" aria-hidden="true">
+    <div class="photo p1" style="--rot:-6deg; left: 4vw;  top: 10vh;">
+      <img src="IMG_9578.jpeg" alt="Foto 1" loading="lazy">
+    </div>
+    <div class="photo p2" style="--rot:7deg; right: 5vw; top: 12vh;">
+      <img src="IMG_0106.jpeg" alt="Foto 2" loading="lazy">
+    </div>
+    <div class="photo p3" style="--rot:4deg; left: 7vw; bottom: 10vh;">
+      <img src="IMG_0174.jpeg" alt="Foto 3" loading="lazy">
+    </div>
+    <div class="photo p4" style="--rot:-5deg; right: 7vw; bottom: 12vh;">
+      <img src="IMG_9149.jpeg" alt="Foto 4" loading="lazy">
+    </div>
+    <div class="photo p5" style="--rot:2deg; left: 50%; top: 6vh; transform: translateX(-50%) rotate(var(--rot));">
+      <img src="IMG_9874.jpeg" alt="Foto 5" loading="lazy">
+    </div>
+  </div>
+
+  <!-- Tarjeta principal (tu texto) -->
+  <main class="card" id="card">
+    <div class="tag">Tengo algo que preguntarte</div>
+    <h1>¿Quieres ser mi San Valentín?</h1>
+    <p>Que mejor que pasar el día con tu novio hermoso precioso.</p>
+
+    <div class="btnArea" id="btnArea">
+      <button id="yesBtn">Sí</button>
+      <button id="noBtn" aria-label="No">No</button>
+    </div>
+
+    <button class="secret-btn" id="secretBtn" type="button">Secreto</button>
+
+    <div class="msg" id="msg"></div>
+
+    <div class="done" id="done">
+      <h2>Te amo con locura, mi vida.</h2>
+      <p>Entonces ya está. Te veo ese día para pasarlo bonito.</p>
+    </div>
+  </main>
+
+  <!-- Modal secreto -->
+  <div class="secret-overlay" id="secretOverlay" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="secret-panel" id="secretPanel">
+      <div class="fire-rain" id="fireRain" aria-hidden="true"></div>
+
+      <div class="secret-content">
+        <div class="secret-top">
+          <div class="secret-title">
+            <h3>Modo secreto</h3>
+            <p>Ok… ahora sí. Una propuesta para más tardecito. Si no, cerramos y seguimos normal.</p>
+          </div>
+          <button class="close-btn" id="closeSecret" type="button">Cerrar</button>
+        </div>
+
+        <div class="meme-scroll">
+          <div class="meme-collage" aria-label="collage de memes">
+            <!-- stickers -->
+            <div class="sticker s1">😈</div>
+            <div class="sticker s2">🔥</div>
+            <div class="sticker s3">🖤</div>
+            <div class="sticker s4">🖤</div>
+
+
+
+            <!-- memes -->
+            <div class="meme m1"><img src="meme1.png" alt="meme 1" loading="lazy"></div>
+            <div class="meme m2"><img src="meme2.png" alt="meme 2" loading="lazy"></div>
+            <div class="meme m3"><img src="meme3.png" alt="meme 3" loading="lazy"></div>
+            <div class="meme m4"><img src="meme4.png" alt="meme 4" loading="lazy"></div>
+          </div>
+        </div>
+
+        <div class="secret-actions">
+          <button class="soft-btn" id="secretNope" type="button">Me hago la loca</button>
+          <button class="ok-btn" id="secretYes" type="button">Ok, me gusta</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== Lluvia de corazones (sin emojis) =====
+    const heartRain = document.getElementById("heartRain");
+    function heartSVG(size){
+      return `
+        <svg width="${size}" height="${size}" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M18 30s-10-6.3-12.9-12.1C3.1 13.6 5.8 9 10.6 9c2.5 0 4.3 1.4 5.4 3 1.1-1.6 2.9-3 5.4-3 4.8 0 7.5 4.6 5.5 8.9C28 23.7 18 30 18 30z"
+                fill="rgba(255,90,122,0.75)"/>
+        </svg>
+      `;
+    }
+    const HEARTS = 26;
+    for (let i = 0; i < HEARTS; i++){
+      const el = document.createElement("div");
+      el.className = "h";
+      const size = 12 + Math.random() * 22;
+      el.innerHTML = heartSVG(size);
+      el.style.left = (Math.random() * 100) + "vw";
+      el.style.animationDuration = (6 + Math.random() * 10) + "s";
+      el.style.animationDelay = (-Math.random() * 10) + "s";
+      el.style.opacity = (0.10 + Math.random() * 0.18).toFixed(2);
+      heartRain.appendChild(el);
+    }
+
+    // ===== Botón "No" que se escapa (móvil + PC) =====
+    const noBtn   = document.getElementById("noBtn");
+    const yesBtn  = document.getElementById("yesBtn");
+    const btnArea = document.getElementById("btnArea");
+    const msg     = document.getElementById("msg");
+    const done    = document.getElementById("done");
+
+    const lines = ["Piénsalo bien.","¿Segura?","Ese botón hoy no coopera.","Intenta otra vez.","No te va a dejar."];
+    let idx = 0;
+
+    function clamp(n, min, max){ return Math.max(min, Math.min(n, max)); }
+    function placeNo(x, y){
+      const area = btnArea.getBoundingClientRect();
+      const btn  = noBtn.getBoundingClientRect();
+      const maxX = area.width - btn.width;
+      const maxY = area.height - btn.height;
+      noBtn.style.left = clamp(x, 0, maxX) + "px";
+      noBtn.style.top  = clamp(y, 0, maxY) + "px";
+    }
+    placeNo(btnArea.clientWidth * 0.58, 16);
+
+    function moveNoAway(evt){
+      const area = btnArea.getBoundingClientRect();
+      const btn  = noBtn.getBoundingClientRect();
+
+      const cx = (evt.touches && evt.touches[0]) ? evt.touches[0].clientX : evt.clientX;
+      const cy = (evt.touches && evt.touches[0]) ? evt.touches[0].clientY : evt.clientY;
+
+      let x = 0, y = 0;
+      for (let tries = 0; tries < 12; tries++){
+        x = Math.random() * (area.width - btn.width);
+        y = Math.random() * (area.height - btn.height);
+
+        const px = area.left + x + btn.width/2;
+        const py = area.top  + y + btn.height/2;
+
+        if (Math.hypot(px - cx, py - cy) > 120) break;
+      }
+
+      placeNo(x, y);
+      msg.textContent = lines[idx % lines.length];
+      idx++;
+
+      if (evt.cancelable) evt.preventDefault();
+    }
+
+    noBtn.addEventListener("pointerdown", moveNoAway, { passive: false });
+    noBtn.addEventListener("touchstart",  moveNoAway, { passive: false });
+    noBtn.addEventListener("mouseenter",  moveNoAway);
+    noBtn.addEventListener("click", (e) => {
+      moveNoAway(e);
+      msg.textContent = "Hoy no cuenta.";
+    });
+
+    yesBtn.addEventListener("click", () => {
+      msg.textContent = "";
+      done.style.display = "block";
+      noBtn.style.display = "none";
+      yesBtn.textContent = "Listo";
+      yesBtn.style.filter = "brightness(1.05)";
+    });
+
+    // ===== Modo secreto =====
+    const secretBtn = document.getElementById("secretBtn");
+    const secretOverlay = document.getElementById("secretOverlay");
+    const closeSecret = document.getElementById("closeSecret");
+    const secretPanel = document.getElementById("secretPanel");
+    const secretYes = document.getElementById("secretYes");
+    const secretNope = document.getElementById("secretNope");
+
+    function openSecret(){
+      secretOverlay.style.display = "flex";
+      secretOverlay.setAttribute("aria-hidden", "false");
+    }
+    function closeSecretFn(){
+      secretOverlay.style.display = "none";
+      secretOverlay.setAttribute("aria-hidden", "true");
+    }
+
+    secretBtn.addEventListener("click", openSecret);
+    closeSecret.addEventListener("click", closeSecretFn);
+
+    secretOverlay.addEventListener("click", (e) => {
+      if (e.target === secretOverlay) closeSecretFn();
+    });
+    secretPanel.addEventListener("click", (e) => e.stopPropagation());
+
+    secretYes.addEventListener("click", () => {
+      closeSecretFn();
+      msg.textContent = "Ok… entonces más tarde te lo cobro.";
+    });
+    secretNope.addEventListener("click", () => {
+      closeSecretFn();
+      msg.textContent = "Jajaja bueno, seguimos decentes.";
+    });
+
+    // ===== Lluvia de fuego (emoji) dentro del modal =====
+    const fireRain = document.getElementById("fireRain");
+    function spawnFire(){
+      fireRain.innerHTML = "";
+      const FIRES = 22;
+      for (let i = 0; i < FIRES; i++){
+        const el = document.createElement("div");
+        el.className = "f";
+        el.textContent = "🔥";
+        el.style.left = (Math.random() * 100) + "%";
+        el.style.animationDuration = (5 + Math.random() * 8) + "s";
+        el.style.animationDelay = (-Math.random() * 8) + "s";
+        el.style.opacity = (0.10 + Math.random() * 0.25).toFixed(2);
+        el.style.fontSize = (14 + Math.random() * 18).toFixed(0) + "px";
+        fireRain.appendChild(el);
+      }
+    }
+    spawnFire();
+  </script>
+</body>
+</html>
