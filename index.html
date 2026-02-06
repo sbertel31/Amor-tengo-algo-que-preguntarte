@@ -430,59 +430,71 @@
       .m4{ grid-column: 3 / 4; grid-row: 2 / span 1; }
     }
 
-/* ===== MÓVIL: collage completo (sin recortes) arriba/abajo, centro libre ===== */
-.card{ position:relative; z-index: 5; }
+/* ===== iPhone (link en WhatsApp/Safari): fotos completas, color normal, sin tapar ===== */
+.card{ position:relative; z-index: 10; }
 .collage{ z-index: 1; }
 
 @media (max-width: 520px){
 
-  /* En móvil dejamos de usar posiciones absolutas */
+  /* Collage en modo “marco” arriba/abajo */
   .collage{
     position: fixed !important;
     inset: 0 !important;
-    display: grid !important;
-    grid-template-rows: auto 1fr auto !important; /* arriba / centro libre / abajo */
+    pointer-events:none !important;
+    display:grid !important;
     grid-template-columns: repeat(3, 1fr) !important;
+    grid-template-rows: 120px 1fr 120px !important; /* arriba / centro libre / abajo */
     gap: 10px !important;
-    padding: 14px 12px 120px !important; /* extra abajo por la barra de Safari */
-    align-items: center !important;
-    justify-items: center !important;
-    pointer-events: none !important;
+    padding: 10px 12px 160px !important; /* espacio extra por barra Safari */
+    align-items:center !important;
+    justify-items:center !important;
   }
 
+  /* Fotos: sin gris/ni opacidad */
   .photo{
     position: relative !important;
-    left: auto !important;
-    right: auto !important;
-    top: auto !important;
-    bottom: auto !important;
+    left:auto !important; right:auto !important;
+    top:auto !important; bottom:auto !important;
 
-    width: 110px !important;
-    height: 150px !important;
+    width: 92px !important;
+    height: 122px !important;
+    padding: 7px !important;
 
-    padding: 8px !important;
-    opacity: 1 !important;      /* sin opacidad */
-    filter: none !important;    /* sin “apagado” */
-    transform: rotate(var(--rot)) scale(1) !important;
+    opacity: 1 !important;
+    filter: none !important;
+    background: rgba(255,255,255,.95) !important; /* quita el look “lavado” */
+    box-shadow: 0 12px 22px rgba(0,0,0,.12) !important;
+    transform: rotate(var(--rot)) !important;
   }
 
-  /* Colocación: 3 arriba */
+  /* Imagen con colores normales */
+  .photo img{
+    filter: none !important;
+    opacity: 1 !important;
+  }
+
+  /* Ubicación: 3 arriba */
   .p1{ grid-row: 1 !important; grid-column: 1 !important; }
   .p2{ grid-row: 1 !important; grid-column: 2 !important; }
   .p3{ grid-row: 1 !important; grid-column: 3 !important; }
 
-  /* 2 abajo (dejando el centro libre) */
+  /* 2 abajo (esquinas) */
   .p4{ grid-row: 3 !important; grid-column: 1 !important; }
   .p5{ grid-row: 3 !important; grid-column: 3 !important; }
 
-  /* (opcional) suaviza un poquito el tamaño si tu iPhone es muy pequeño */
-  @media (max-width: 380px){
-    .photo{ width: 100px !important; height: 138px !important; }
+  /* En iPhone pequeños, aún más mini */
+  @media (max-width: 390px){
+    .photo{
+      width: 84px !important;
+      height: 112px !important;
+      padding: 6px !important;
+    }
+    .collage{
+      grid-template-rows: 110px 1fr 110px !important;
+      padding-bottom: 175px !important;
+    }
   }
 }
-
-
-
 
     .secret-actions{
       display:flex;
