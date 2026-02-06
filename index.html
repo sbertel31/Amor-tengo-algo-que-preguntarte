@@ -430,25 +430,40 @@
       .m4{ grid-column: 3 / 4; grid-row: 2 / span 1; }
     }
 
-    /* ===== FIX iPhone: fotos no tapan la tarjeta ===== */
-    @media (max-width: 520px){
-        .photo{
-            width: 118px !important;
-            height: 156px !important;
-            padding: 8px !important;
-            opacity: .55 !important;
-            filter: saturate(.95) contrast(.95);
-        }
+    /* ===== FIX DEFINITIVO iPhone: fotos NO tapan la tarjeta (incluye p5) ===== */
+.card{ position:relative; z-index: 5; }
+.collage{ z-index: 1; }
 
-  /* Las mandamos bien a las esquinas */
-  .p1{ left: -34px !important; top: 88px !important; }
-  .p2{ right:-36px !important; top: 120px !important; }
-  .p3{ left: -36px !important; bottom: 92px !important; }
-  .p4{ right:-34px !important; bottom: 130px !important; }
+@media (max-width: 520px){
+  .photo{
+    width: 110px !important;
+    height: 150px !important;
+    padding: 7px !important;
+    opacity: .42 !important;
+    filter: saturate(.95) contrast(.95);
+  }
 
-  /* La de arriba (p5) suele estorbar: muévela o escóndela */
-  .p5{ display:none !important; }
+  /* Arriba (bien a los bordes) */
+  .p1{ left: -38px !important; top: 118px !important; }
+  .p2{ right:-38px !important; top: 138px !important; }
+
+  /* Abajo (bien a los bordes) */
+  .p3{ left: -40px !important; bottom: 160px !important; }
+  .p4{ right:-40px !important; bottom: 185px !important; }
+
+  /* p5 se mantiene, pero MUY arriba y pequeña para no estorbar */
+  .p5{
+    display:block !important;
+    left: 50% !important;
+    top: -68px !important;
+    width: 92px !important;
+    height: 126px !important;
+    padding: 6px !important;
+    opacity: .26 !important;
+    transform: translateX(-50%) rotate(var(--rot)) !important;
+  }
 }
+
 
     .secret-actions{
       display:flex;
