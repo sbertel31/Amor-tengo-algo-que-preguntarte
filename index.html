@@ -430,6 +430,26 @@
       .m4{ grid-column: 3 / 4; grid-row: 2 / span 1; }
     }
 
+    /* ===== FIX iPhone: fotos no tapan la tarjeta ===== */
+    @media (max-width: 520px){
+        .photo{
+            width: 118px !important;
+            height: 156px !important;
+            padding: 8px !important;
+            opacity: .55 !important;
+            filter: saturate(.95) contrast(.95);
+        }
+
+  /* Las mandamos bien a las esquinas */
+  .p1{ left: -34px !important; top: 88px !important; }
+  .p2{ right:-36px !important; top: 120px !important; }
+  .p3{ left: -36px !important; bottom: 92px !important; }
+  .p4{ right:-34px !important; bottom: 130px !important; }
+
+  /* La de arriba (p5) suele estorbar: muévela o escóndela */
+  .p5{ display:none !important; }
+}
+
     .secret-actions{
       display:flex;
       gap:10px;
