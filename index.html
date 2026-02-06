@@ -430,39 +430,39 @@
       .m4{ grid-column: 3 / 4; grid-row: 2 / span 1; }
     }
 
-    /* ===== FIX DEFINITIVO iPhone: fotos NO tapan la tarjeta (incluye p5) ===== */
+    /* ===== FIX iPhone: fotos bien visibles y sin tapar (SIN opacidad) ===== */
 .card{ position:relative; z-index: 5; }
 .collage{ z-index: 1; }
 
 @media (max-width: 520px){
   .photo{
-    width: 110px !important;
-    height: 150px !important;
-    padding: 7px !important;
-    opacity: .42 !important;
-    filter: saturate(.95) contrast(.95);
+    width: 118px !important;
+    height: 162px !important;
+    padding: 8px !important;
+    opacity: 1 !important;      /* <- visible normal */
+    filter: none !important;     /* <- sin “apagado” */
   }
 
-  /* Arriba (bien a los bordes) */
-  .p1{ left: -38px !important; top: 118px !important; }
-  .p2{ right:-38px !important; top: 138px !important; }
+  /* A los bordes: centro libre */
+  .p1{ left: -52px !important; top: 120px !important; }
+  .p2{ right:-52px !important; top: 140px !important; }
 
-  /* Abajo (bien a los bordes) */
-  .p3{ left: -40px !important; bottom: 160px !important; }
-  .p4{ right:-40px !important; bottom: 185px !important; }
+  .p3{ left: -58px !important; bottom: 170px !important; }
+  .p4{ right:-58px !important; bottom: 190px !important; }
 
-  /* p5 se mantiene, pero MUY arriba y pequeña para no estorbar */
+  /* p5 arriba sin estorbar */
   .p5{
     display:block !important;
     left: 50% !important;
-    top: -68px !important;
-    width: 92px !important;
-    height: 126px !important;
-    padding: 6px !important;
-    opacity: .26 !important;
+    top: -74px !important;
+    width: 98px !important;
+    height: 134px !important;
+    padding: 7px !important;
+    opacity: 1 !important;
     transform: translateX(-50%) rotate(var(--rot)) !important;
   }
 }
+
 
 
     .secret-actions{
