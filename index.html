@@ -152,9 +152,9 @@
     #yesBtn{ background: var(--yes); color:#fff; }
     #noBtn{
       background: var(--no); color:#fff;
-      position:absolute;
-      left: 56%;
-      top: 14px;
+      position:relative;
+      left: auto;
+      top: auto;
     }
 
     .secret-btn{
@@ -629,59 +629,86 @@
       heartRain.appendChild(el);
     }
 
-    // ===== Botón "No" que se escapa (móvil + PC) =====
     const noBtn   = document.getElementById("noBtn");
-    const yesBtn  = document.getElementById("yesBtn");
-    const btnArea = document.getElementById("btnArea");
-    const msg     = document.getElementById("msg");
-    const done    = document.getElementById("done");
+const yesBtn  = document.getElementById("yesBtn");
+const btnArea = document.getElementById("btnArea");
+const msg     = document.getElementById("msg");
+const done    = document.getElementById("done");
 
-    const lines = ["Piénsalo bien.","¿Segura?","Ese botón hoy no coopera.","Intenta otra vez.","No te va a dejar."];
-    let idx = 0;
+const lines = ["Piénsalo bien.","¿Segura?","Ese botón hoy no coopera.","Intenta otra vez.","No te va a dejar."];
+let idx = 0;
 
-    function clamp(n, min, max){ return Math.max(min, Math.min(n, max)); }
-    function placeNo(x, y){
-      const area = btnArea.getBoundingClientRect();
-      const btn  = noBtn.getBoundingClientRect();
-      const maxX = area.width - btn.width;
-      const maxY = area.height - btn.height;
-      noBtn.style.left = clamp(x, 0, maxX) + "px";
-      noBtn.style.top  = clamp(y, 0, maxY) + "px";
-    }
-    placeNo(btnArea.clientWidth * 0.58, 16);
+function clamp(n, min, max){ return Math.max(min, Math.min(n, max)); }
 
-    function moveNoAway(evt){
-      const area = btnArea.getBoundingClientRect();
-      const btn  = noBtn.getBoundingClientRect();
+let escapeEnabled = false;
 
-      const cx = (evt.touches && evt.touches[0]) ? evt.touches[0].clientX : evt.clientX;
-      const cy = (evt.touches && evt.touches[0]) ? evt.touches[0].clientY : evt.clientY;
+/* Al inicio: No normal al lado de Sí */
+function setAligned(){
+  escapeEnabled = false;
+  noBtn.style.position = "relative";
+  noBtn.style.left = "auto";
+  noBtn.style.top  = "auto";
+}
 
-      let x = 0, y = 0;
-      for (let tries = 0; tries < 12; tries++){
-        x = Math.random() * (area.width - btn.width);
-        y = Math.random() * (area.height - btn.height);
+/* Cuando se activa: No se vuelve absoluto y ya se mueve */
+function enableEscape(){
+  if (escapeEnabled) return;
+  escapeEnabled = true;
 
-        const px = area.left + x + btn.width/2;
-        const py = area.top  + y + btn.height/2;
+  noBtn.style.position = "absolute";
+  // lo colocamos a la derecha del Sí al arrancar el escape
+  const area = btnArea.getBoundingClientRect();
+  const yes  = yesBtn.getBoundingClientRect();
+  const btn  = noBtn.getBoundingClientRect();
 
-        if (Math.hypot(px - cx, py - cy) > 120) break;
-      }
+  const x = clamp((yes.left - area.left) + yes.width + 10, 0, area.width - btn.width);
+  const y = clamp(16, 0, area.height - btn.height);
 
-      placeNo(x, y);
-      msg.textContent = lines[idx % lines.length];
-      idx++;
+  noBtn.style.left = x + "px";
+  noBtn.style.top  = y + "px";
+}
 
-      if (evt.cancelable) evt.preventDefault();
-    }
+setAligned();
 
-    noBtn.addEventListener("pointerdown", moveNoAway, { passive: false });
-    noBtn.addEventListener("touchstart",  moveNoAway, { passive: false });
-    noBtn.addEventListener("mouseenter",  moveNoAway);
-    noBtn.addEventListener("click", (e) => {
-      moveNoAway(e);
-      msg.textContent = "Hoy no cuenta.";
-    });
+/* Primer intento: se activa escape y se mueve */
+function moveNoAway(evt){
+  // Si aún no está activo, lo activamos en el primer toque
+  if (!escapeEnabled) enableEscape();
+
+  const area = btnArea.getBoundingClientRect();
+  const btn  = noBtn.getBoundingClientRect();
+
+  const cx = (evt.touches && evt.touches[0]) ? evt.touches[0].clientX : evt.clientX;
+  const cy = (evt.touches && evt.touches[0]) ? evt.touches[0].clientY : evt.clientY;
+
+  let x = 0, y = 0;
+  for (let tries = 0; tries < 12; tries++){
+    x = Math.random() * (area.width - btn.width);
+    y = Math.random() * (area.height - btn.height);
+
+    const px = area.left + x + btn.width/2;
+    const py = area.top  + y + btn.height/2;
+
+    if (Math.hypot(px - cx, py - cy) > 120) break;
+  }
+
+  noBtn.style.left = clamp(x, 0, area.width - btn.width) + "px";
+  noBtn.style.top  = clamp(y, 0, area.height - btn.height) + "px";
+
+  msg.textContent = lines[idx % lines.length];
+  idx++;
+
+  if (evt.cancelable) evt.preventDefault();
+}
+
+noBtn.addEventListener("pointerdown", moveNoAway, { passive: false });
+noBtn.addEventListener("touchstart",  moveNoAway, { passive: false });
+noBtn.addEventListener("mouseenter",  moveNoAway);
+noBtn.addEventListener("click", (e) => {
+  moveNoAway(e);
+  msg.textContent = "Hoy no cuenta.";
+});
+
 
     yesBtn.addEventListener("click", () => {
       msg.textContent = "";
