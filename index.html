@@ -151,10 +151,27 @@
     button:active{ transform: scale(.98); }
     #yesBtn{ background: var(--yes); color:#fff; }
     #noBtn{
-      background: var(--no); color:#fff;
-      position:relative;
+      background: var(--no);
+      color:#fff;
+      position: static; /* alineado al inicio */
       left: auto;
       top: auto;
+    }
+
+    /* ===== Botones alineados en móvil al inicio ===== */
+    @media (max-width: 520px){
+      #btnArea{
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        height: auto;
+        padding: 10px 0;
+      }
+      #yesBtn, #noBtn{
+        min-width: 140px;
+      }
     }
 
     .secret-btn{
@@ -645,7 +662,8 @@ let escapeEnabled = false;
 /* Al inicio: No normal al lado de Sí */
 function setAligned(){
   escapeEnabled = false;
-  noBtn.style.position = "relative";
+  // Al inicio: ambos quedan alineados por flex (flow normal)
+  noBtn.style.position = "static";
   noBtn.style.left = "auto";
   noBtn.style.top  = "auto";
 }
