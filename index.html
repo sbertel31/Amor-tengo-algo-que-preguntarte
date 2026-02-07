@@ -1,11 +1,11 @@
 <!DOCTYPE html>
+
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Amorcito, tengo una pregunta...</title>
-
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Amorcito, tengo una pregunta...</title>
+<style>
     :root{
       --bg1:#fdecef;
       --bg2:#f7c7d3;
@@ -151,27 +151,10 @@
     button:active{ transform: scale(.98); }
     #yesBtn{ background: var(--yes); color:#fff; }
     #noBtn{
-      background: var(--no);
-      color:#fff;
-      position: static; /* alineado al inicio */
+      background: var(--no); color:#fff;
+      position:relative;
       left: auto;
       top: auto;
-    }
-
-    /* ===== Botones alineados en móvil al inicio ===== */
-    @media (max-width: 520px){
-      #btnArea{
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 12px;
-        height: auto;
-        padding: 10px 0;
-      }
-      #yesBtn, #noBtn{
-        min-width: 140px;
-      }
     }
 
     .secret-btn{
@@ -535,94 +518,101 @@
       min-width: 0;
       padding: 12px 14px;
     }
-  </style>
+  
+
+/* ===== FIX: Botones alineados al inicio también en móvil ===== */
+@media (max-width: 520px){
+  #btnArea{
+    position: relative !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 12px !important;
+    height: auto !important;
+    padding: 10px 0 !important;
+    flex-wrap: nowrap !important;
+  }
+  #yesBtn, #noBtn{
+    position: static !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
+    min-width: 140px !important;
+  }
+}
+</style>
 </head>
-
 <body>
-  <!-- Fondo: lluvia de corazones -->
-  <div class="heart-rain" id="heartRain" aria-hidden="true"></div>
-
-  <!-- Collage de fotos por toda la pantalla -->
-  <div class="collage" aria-hidden="true">
-    <div class="photo p1" style="--rot:-6deg; left: 4vw;  top: 10vh;">
-      <img src="IMG_9578.jpeg" alt="Foto 1" loading="lazy">
-    </div>
-    <div class="photo p2" style="--rot:7deg; right: 5vw; top: 12vh;">
-      <img src="IMG_0106.jpeg" alt="Foto 2" loading="lazy">
-    </div>
-    <div class="photo p3" style="--rot:4deg; left: 7vw; bottom: 10vh;">
-      <img src="IMG_0174.jpeg" alt="Foto 3" loading="lazy">
-    </div>
-    <div class="photo p4" style="--rot:-5deg; right: 7vw; bottom: 12vh;">
-      <img src="IMG_9149.jpeg" alt="Foto 4" loading="lazy">
-    </div>
-    <div class="photo p5" style="--rot:2deg; left: 50%; top: 6vh; transform: translateX(-50%) rotate(var(--rot));">
-      <img src="IMG_9874.jpeg" alt="Foto 5" loading="lazy">
-    </div>
-  </div>
-
-  <!-- Tarjeta principal (tu texto) -->
-  <main class="card" id="card">
-    <div class="tag">Tengo algo que preguntarte</div>
-    <h1>¿Quieres ser mi San Valentín?</h1>
-    <p>Que mejor que pasar el día con tu novio hermoso precioso.</p>
-
-    <div class="btnArea" id="btnArea">
-      <button id="yesBtn">Sí</button>
-      <button id="noBtn" aria-label="No">No</button>
-    </div>
-
-    <button class="secret-btn" id="secretBtn" type="button">Secreto</button>
-
-    <div class="msg" id="msg"></div>
-
-    <div class="done" id="done">
-      <h2>Te amo con locura, mi vida.</h2>
-      <p>Entonces ya está. Te veo ese día para pasarlo bonito.</p>
-    </div>
-  </main>
-
-  <!-- Modal secreto -->
-  <div class="secret-overlay" id="secretOverlay" role="dialog" aria-modal="true" aria-hidden="true">
-    <div class="secret-panel" id="secretPanel">
-      <div class="fire-rain" id="fireRain" aria-hidden="true"></div>
-
-      <div class="secret-content">
-        <div class="secret-top">
-          <div class="secret-title">
-            <h3>Modo secreto</h3>
-            <p>Ok… ahora sí. Una propuesta para más tardecito. Si no, cerramos y seguimos normal.</p>
-          </div>
-          <button class="close-btn" id="closeSecret" type="button">Cerrar</button>
-        </div>
-
-        <div class="meme-scroll">
-          <div class="meme-collage" aria-label="collage de memes">
-            <!-- stickers -->
-            <div class="sticker s1">😈</div>
-            <div class="sticker s2">🔥</div>
-            <div class="sticker s3">🖤</div>
-            <div class="sticker s4">🖤</div>
-
-
-
-            <!-- memes -->
-            <div class="meme m1"><img src="meme1.png" alt="meme 1" loading="lazy"></div>
-            <div class="meme m2"><img src="meme2.png" alt="meme 2" loading="lazy"></div>
-            <div class="meme m3"><img src="meme3.png" alt="meme 3" loading="lazy"></div>
-            <div class="meme m4"><img src="meme4.png" alt="meme 4" loading="lazy"></div>
-          </div>
-        </div>
-
-        <div class="secret-actions">
-          <button class="soft-btn" id="secretNope" type="button">Me hago la loca</button>
-          <button class="ok-btn" id="secretYes" type="button">Ok, me gusta</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
+<!-- Fondo: lluvia de corazones -->
+<div aria-hidden="true" class="heart-rain" id="heartRain"></div>
+<!-- Collage de fotos por toda la pantalla -->
+<div aria-hidden="true" class="collage">
+<div class="photo p1" style="--rot:-6deg; left: 4vw;  top: 10vh;">
+<img alt="Foto 1" loading="lazy" src="IMG_9578.jpeg"/>
+</div>
+<div class="photo p2" style="--rot:7deg; right: 5vw; top: 12vh;">
+<img alt="Foto 2" loading="lazy" src="IMG_0106.jpeg"/>
+</div>
+<div class="photo p3" style="--rot:4deg; left: 7vw; bottom: 10vh;">
+<img alt="Foto 3" loading="lazy" src="IMG_0174.jpeg"/>
+</div>
+<div class="photo p4" style="--rot:-5deg; right: 7vw; bottom: 12vh;">
+<img alt="Foto 4" loading="lazy" src="IMG_9149.jpeg"/>
+</div>
+<div class="photo p5" style="--rot:2deg; left: 50%; top: 6vh; transform: translateX(-50%) rotate(var(--rot));">
+<img alt="Foto 5" loading="lazy" src="IMG_9874.jpeg"/>
+</div>
+</div>
+<!-- Tarjeta principal (tu texto) -->
+<main class="card" id="card">
+<div class="tag">Tengo algo que preguntarte</div>
+<h1>¿Quieres ser mi San Valentín?</h1>
+<p>Que mejor que pasar el día con tu novio hermoso precioso.</p>
+<div class="btnArea" id="btnArea">
+<button id="yesBtn">Sí</button>
+<button aria-label="No" id="noBtn">No</button>
+</div>
+<button class="secret-btn" id="secretBtn" type="button">Secreto</button>
+<div class="msg" id="msg"></div>
+<div class="done" id="done">
+<h2>Te amo con locura, mi vida.</h2>
+<p>Entonces ya está. Te veo ese día para pasarlo bonito.</p>
+</div>
+</main>
+<!-- Modal secreto -->
+<div aria-hidden="true" aria-modal="true" class="secret-overlay" id="secretOverlay" role="dialog">
+<div class="secret-panel" id="secretPanel">
+<div aria-hidden="true" class="fire-rain" id="fireRain"></div>
+<div class="secret-content">
+<div class="secret-top">
+<div class="secret-title">
+<h3>Modo secreto</h3>
+<p>Ok… ahora sí. Una propuesta para más tardecito. Si no, cerramos y seguimos normal.</p>
+</div>
+<button class="close-btn" id="closeSecret" type="button">Cerrar</button>
+</div>
+<div class="meme-scroll">
+<div aria-label="collage de memes" class="meme-collage">
+<!-- stickers -->
+<div class="sticker s1">😈</div>
+<div class="sticker s2">🔥</div>
+<div class="sticker s3">🖤</div>
+<div class="sticker s4">🖤</div>
+<!-- memes -->
+<div class="meme m1"><img alt="meme 1" loading="lazy" src="meme1.png"/></div>
+<div class="meme m2"><img alt="meme 2" loading="lazy" src="meme2.png"/></div>
+<div class="meme m3"><img alt="meme 3" loading="lazy" src="meme3.png"/></div>
+<div class="meme m4"><img alt="meme 4" loading="lazy" src="meme4.png"/></div>
+</div>
+</div>
+<div class="secret-actions">
+<button class="soft-btn" id="secretNope" type="button">Me hago la loca</button>
+<button class="ok-btn" id="secretYes" type="button">Ok, me gusta</button>
+</div>
+</div>
+</div>
+</div>
+<script>
     // ===== Lluvia de corazones (sin emojis) =====
     const heartRain = document.getElementById("heartRain");
     function heartSVG(size){
@@ -662,10 +652,12 @@ let escapeEnabled = false;
 /* Al inicio: No normal al lado de Sí */
 function setAligned(){
   escapeEnabled = false;
-  // Al inicio: ambos quedan alineados por flex (flow normal)
+  // Alineado al inicio (en móvil y PC)
   noBtn.style.position = "static";
   noBtn.style.left = "auto";
   noBtn.style.top  = "auto";
+  noBtn.style.removeProperty("left");
+  noBtn.style.removeProperty("top");
 }
 
 /* Cuando se activa: No se vuelve absoluto y ya se mueve */
@@ -721,7 +713,9 @@ function moveNoAway(evt){
 
 noBtn.addEventListener("pointerdown", moveNoAway, { passive: false });
 noBtn.addEventListener("touchstart",  moveNoAway, { passive: false });
-noBtn.addEventListener("mouseenter",  moveNoAway);
+if (!("ontouchstart" in window)) {
+  noBtn.addEventListener("mouseenter",  moveNoAway);
+}
 noBtn.addEventListener("click", (e) => {
   moveNoAway(e);
   msg.textContent = "Hoy no cuenta.";
